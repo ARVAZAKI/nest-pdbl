@@ -9,31 +9,35 @@ generator client {
 }
 
 datasource db {
-  provider = "mongodb"
+  provider = "mysql"
   url      = env("DATABASE_URL")
 }
+
 model User {
-  id       String       @id @default(auto()) @map("_id") @db.ObjectId
-  username String
-  password String
-  token    String?
+  id          String       @id @default(uuid()) @db.Char(36) // UUID sebagai ID unik
+  username    String       @unique @db.VarChar(50)           // Username harus unik
+  password    String       @db.VarChar(255)                 // Hash password
+  token       String?      @db.VarChar(255)                 // Token opsional
 
-  permissions Permission[]
+  permissions Permission[] // Relasi ke Permission model
 
-  @@map("users")
+  @@map("users") // Map ke tabel "users" di database
 }
 
 model Permission {
-  id          String  @id @default(auto()) @map("_id") @db.ObjectId
-  file        String
-  keterangan  String
-  status      String?
-  user_id     String
+  id          String  @id @default(uuid()) @db.Char(36) // UUID sebagai ID unik
+  file        String  @db.VarChar(255) // Nama atau path file
+  keterangan  String  @db.Text        // Deskripsi
+  status      String? @db.VarChar(50) // Kolom status opsional
+  user_id     String  @db.Char(36)    // Relasi ke User.id
 
-  user User @relation(fields: [user_id], references: [id])
+  user User @relation(fields: [user_id], references: [id]) // Definisi relasi ke User
 
-  @@map("permissions")
+  @@index([user_id]) // Index untuk foreign key
+  @@map("permissions") // Map ke tabel "permissions" di database
 }
+
+
 
 
 
