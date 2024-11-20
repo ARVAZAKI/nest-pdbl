@@ -19,22 +19,13 @@ model User {
   password    String       @db.VarChar(255)                 // Hash password
   token       String?      @db.VarChar(255)                 // Token opsional
 
-  permissions Permission[] // Relasi ke Permission model
 
   @@map("users") // Map ke tabel "users" di database
 }
 
-model Permission {
+model Kelas {
   id          String  @id @default(uuid()) @db.Char(36) // UUID sebagai ID unik
-  file        String  @db.VarChar(255) // Nama atau path file
-  keterangan  String  @db.Text        // Deskripsi
-  status      String? @db.VarChar(50) // Kolom status opsional
-  user_id     String  @db.Char(36)    // Relasi ke User.id
-
-  user User @relation(fields: [user_id], references: [id]) // Definisi relasi ke User
-
-  @@index([user_id]) // Index untuk foreign key
-  @@map("permissions") // Map ke tabel "permissions" di database
+  kelas        String  @db.VarChar(20) // Nama atau path file
 }
 
 
